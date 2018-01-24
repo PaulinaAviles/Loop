@@ -1,0 +1,103 @@
+/**
+ * Loop. 
+ * 
+ * Shows how to load and play a QuickTime movie file.  
+ *
+ */
+
+import processing.video.*; // importa librería de video
+
+
+Movie movie; //objeto de tipo movie
+Movie movie2;
+Movie movie3;
+
+float delta;
+float transparencia;
+float cambio;
+
+void setup() {
+  size(640, 360);
+  background(0);
+  // Load and play the video in a loop
+  movie = new Movie(this, "transit.mov"); //sin "this" no es se genera el video
+  movie.loop(); // si se pone movie.play(), solo se reproduce el video una vez. Solo se ejecuta la orden una sola vez
+  
+  movie2=new Movie(this,"transit.mov");
+  movie2.jump(20);
+  movie2.loop();
+ 
+   
+  //movie.speed(15); //no se pueden poner numeros negativos, solo enteros y decimales positivos. Si no es dinamico, se puedo poner en setup, si es dinamico, se pone en draw
+  //println(movie.duration()*30); //imprimir la duración en fotogramas 1 seg= 30 fotogramas
+}
+
+void movieEvent(Movie m) {
+  m.read(); // cada vez que quiero que se reproduzca en la pantalla, mando llamar movieEvent. Para que se dibujen los cambios en la pantalla
+}
+
+void draw() {
+  cambio= mouseX/500f; //para asignar el valor en numero flotante
+  delta+=cambio;
+  transparencia= map(sin(delta),-1,1,0,255); 
+  //map recibe un valor inicial map(valor a mapear, valor menor a mapear, val mayor que voy a mappear, val menor al cual quiero que se transforme, val menor al que yo quiero que se transforme)
+  background(255);
+  tint(255,255,255,255);
+  
+  //pushMatrix();
+  //scale(-1,1);
+  //image(movie2,-640,0); //para que el video se reproduza en "reflejo"
+  
+  image(movie2,0,0);
+  
+ // tint(0,255,0,mouseX);
+  //movie.speed(mouseX/10f); //SI cambia la velocidad del video
+   //movie.frameRate(5); // No significa que el video se reproduce a diferente velocidad, solola que la imagen se actualiza a diferente tiempo.
+  //if (movie.available() == true) {  /estas tes línes estan comentadas porque se requerian en las versionas anteriores de Processing, pero no más
+  //  movie.read(); 
+  //}
+  imageMode(CORNERS);
+  tint(0,255,0,transparencia);
+  image(movie, 0, 0, 640, 360);
+  randomFrame();
+}
+
+void keyPressed(){
+  if (key=='a'||key=='s'){
+  movie.pause();
+  }
+  if (key=='s'||key=='S'){
+  movie.play();
+  }
+  if (key=='d'||key=='D'){
+    jumpFrame(234);
+  }
+
+}
+
+
+//void keyReleased() {
+//  movie.loop ();
+//}
+
+void mousePressed(){
+  //movie.jump(movie.duration()/4); //para brincar a una parte del video
+  movie2=new Movie(this,"v1.mov");
+  movie2.loop();
+}
+
+void jumpFrame(int f){
+    movie.jump(f/30f);
+    movie.pause();
+}
+
+void randomFrame(){
+  int tiempo;
+  int tiempo_act=0;
+  tiempo=second();
+  
+  if (tiempo_act-tiempo==2){
+    tiempo_act=second();
+    println(tiempo_act-tiempo);
+  movie.jump(random(movie.duration()));}
+}
